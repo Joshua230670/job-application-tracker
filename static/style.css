@@ -1,0 +1,56 @@
+:root {
+  --ink: #1d2733;
+  --paper: #f5f6f8;
+  --line: #dce1e7;
+  --teal: #0f766e;
+  --teal-dark: #0b5953;
+}
+body { background: var(--paper); color: var(--ink); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.app-nav { background: var(--ink); }
+.app-nav .navbar-brand { font-weight: 650; letter-spacing: 0.01em; }
+.app-nav .nav-link.active { color: #fff; box-shadow: inset 0 -2px 0 #5eead4; }
+a { color: var(--teal); }
+a:hover { color: var(--teal-dark); }
+
+.btn-primary { --bs-btn-bg: var(--teal); --bs-btn-border-color: var(--teal);
+  --bs-btn-hover-bg: var(--teal-dark); --bs-btn-hover-border-color: var(--teal-dark);
+  --bs-btn-active-bg: var(--teal-dark); --bs-btn-active-border-color: var(--teal-dark); }
+.form-control:focus, .form-select:focus, .btn:focus-visible { border-color: var(--teal); box-shadow: 0 0 0 0.2rem rgba(15, 118, 110, 0.25); }
+
+.table > :not(caption) > * > * { border-bottom-color: var(--line); }
+.table thead th { font-weight: 600; color: #4b5866; font-size: 0.875rem; }
+#table-filter { min-width: 14rem; }
+
+.form-card, .detail-card, .match-form { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 1.5rem; }
+.form-card { max-width: 40rem; }
+.detail-card { padding: 1.25rem 1.5rem; }
+.empty-state { background: #fff; border: 1px dashed #b9c2cc; border-radius: 8px; padding: 2rem; text-align: center; }
+
+.stat-tile { background: #fff; border: 1px solid var(--line); border-left: 4px solid var(--teal); border-radius: 6px; padding: 1rem 1.25rem; }
+.stat-value { font-size: 2rem; font-weight: 650; line-height: 1.1; }
+.stat-label { color: #5b6773; font-size: 0.9rem; }
+.status-label { width: 5.5rem; font-size: 0.9rem; }
+.status-count { width: 1.5rem; text-align: right; font-variant-numeric: tabular-nums; }
+.data-counts li { display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px solid var(--line); }
+.data-counts li:last-child { border-bottom: 0; }
+
+/* Status colours are shared by badges and dashboard bars. */
+.badge[class*="status-"] { color: #fff; font-weight: 500; }
+.status-applied { background: #5b6773; } .bar-applied { background: #5b6773; }
+.status-screening { background: #2563eb; } .bar-screening { background: #2563eb; }
+.status-interview { background: #7c3aed; } .bar-interview { background: #7c3aed; }
+.status-offer { background: #15803d; } .bar-offer { background: #15803d; }
+.status-rejected { background: #b91c1c; } .bar-rejected { background: #b91c1c; }
+.status-withdrawn { background: #8a94a0; } .bar-withdrawn { background: #8a94a0; }
+
+.json-block { background: #f0f2f5; border-radius: 6px; padding: 0.75rem; font-size: 0.85rem; white-space: pre-wrap; }
+.skill-chip { background: #ccfbf1; color: #134e4a; font-weight: 500; }
+.skill-missing { background: #fee2e2; color: #7f1d1d; }
+
+.match-card { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; }
+.match-card.match-none { opacity: 0.7; }
+.match-title { font-weight: 600; font-size: 1.05rem; }
+.match-percent { font-size: 1.25rem; font-weight: 650; white-space: nowrap; }
+.bar-match { background: var(--teal); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
