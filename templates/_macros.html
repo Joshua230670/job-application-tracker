@@ -1,0 +1,53 @@
+{# Shared pieces used by the list pages and the detail page. #}
+
+{% macro cell(col_key, row) -%}
+  {%- set v = row[col_key] -%}
+  {%- if v is none or v == '' -%}<span class="text-muted">&ndash;</span>
+  {%- elif col_key == 'status' -%}<span class="badge status-{{ v|lower }}">{{ v }}</span>
+  {%- else -%}{{ v }}{%- endif -%}
+{%- endmacro %}
+
+{% macro entity_list(entity, key, rows) %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <h1 class="h3 mb-0">{{ entity.plural }}</h1>
+  <div class="d-flex gap-2">
+    {% if rows %}<input id="table-filter" class="form-control" type="search" placeholder="Filter {{ entity.plural|lower }}" aria-label="Filter {{ entity.plural|lower }}">{% endif %}
+    <a class="btn btn-primary text-nowrap" href="{{ url_for('new_view', entity_key=key) }}">Add {{ entity.singular|lower }}</a>
+  </div>
+</div>
+
+{% if rows %}
+<div class="table-responsive">
+  <table class="table table-hover align-middle bg-white" id="data-table">
+    <thead>
+      <tr>
+        {% for col, label in entity.columns %}<th scope="col">{{ label }}</th>{% endfor %}
+        <th scope="col" class="text-end">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      {% set rid = row[entity.pk] %}
+      <tr>
+        {% for col, label in entity.columns %}
+        <td>
+          {% if loop.first %}<a href="{{ url_for('detail_view', entity_key=key, record_id=rid) }}">{{ cell(col, row) }}</a>
+          {% else %}{{ cell(col, row) }}{% endif %}
+        </td>
+        {% endfor %}
+        <td class="text-end text-nowrap">
+          <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('edit_view', entity_key=key, record_id=rid) }}">Edit</a>
+          <a class="btn btn-sm btn-outline-danger" href="{{ url_for('delete_view', entity_key=key, record_id=rid) }}">Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="empty-state">
+  <p class="mb-2">No {{ entity.plural|lower }} yet.</p>
+  <a class="btn btn-primary" href="{{ url_for('new_view', entity_key=key) }}">Add your first {{ entity.singular|lower }}</a>
+</div>
+{% endif %}
+{% endmacro %}

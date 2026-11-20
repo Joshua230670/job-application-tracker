@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if record else 'Add' }} {{ entity.singular|lower }}{% endblock %}
+{% block content %}
+{% set input_types = {'int': 'number', 'date': 'date', 'email': 'email', 'url': 'url'} %}
+<div class="form-card">
+  <h1 class="h3 mb-4">{{ 'Edit' if record else 'Add' }} {{ entity.singular|lower }}</h1>
+  <form method="post">
+    {% for f in entity.fields %}
+    <div class="mb-3">
+      {% if f.type == 'bool' %}
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="{{ f.name }}" name="{{ f.name }}" value="1" {{ 'checked' if values[f.name] }}>
+        <label class="form-check-label" for="{{ f.name }}">{{ f.label }}</label>
+      </div>
+      {% else %}
+      <label for="{{ f.name }}" class="form-label">{{ f.label }}{% if f.required %} <span class="text-danger" title="Required">*</span>{% endif %}</label>
+        {% if f.type == 'textarea' %}
+        <textarea class="form-control" id="{{ f.name }}" name="{{ f.name }}" rows="3">{{ values[f.name] }}</textarea>
+        {% elif f.type == 'json' %}
+        <textarea class="form-control font-monospace" id="{{ f.name }}" name="{{ f.name }}" rows="6" spellcheck="false">{{ values[f.name] }}</textarea>
+        {% elif f.type == 'select' %}
+        <select class="form-select" id="{{ f.name }}" name="{{ f.name }}" {{ 'required' if f.required }}>
+          <option value="">Choose...</option>
+          {% for o in f.options %}<option value="{{ o }}" {{ 'selected' if values[f.name] == o }}>{{ o }}</option>{% endfor %}
+        </select>
+        {% elif f.type == 'fk' %}
+        <select class="form-select" id="{{ f.name }}" name="{{ f.name }}" required>
+          <option value="">Choose...</option>
+          {% for o in options[f.name] %}<option value="{{ o.value }}" {{ 'selected' if values[f.name]|string == o.value|string }}>{{ o.label }}</option>{% endfor %}
+        </select>
+        {% else %}
+        <input class="form-control" id="{{ f.name }}" name="{{ f.name }}" type="{{ input_types.get(f.type, 'text') }}"
+               value="{{ values[f.name] }}" {% if f.max %}maxlength="{{ f.max }}"{% endif %} {{ 'required' if f.required }}
+               {% if f.type == 'int' %}min="0"{% endif %}>
+        {% endif %}
+      {% endif %}
+      {% if f.help %}<div class="form-text">{{ f.help }}</div>{% endif %}
+    </div>
+    {% endfor %}
+    <div class="d-flex gap-2 mt-4">
+      <button class="btn btn-primary" type="submit">Save {{ entity.singular|lower }}</button>
+      <a class="btn btn-outline-secondary" href="{{ url_for('detail_view', entity_key=key, record_id=record[entity.pk]) if record else url_for('list_view', entity_key=key) }}">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

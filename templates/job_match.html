@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Job Match{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">Job Match</h1>
+<p class="text-muted">Enter your skills and see which saved jobs fit best. Each job is scored by the share of its required skills you have.</p>
+
+<form method="get" class="match-form mb-4">
+  <label for="skills" class="form-label">Your skills</label>
+  <div class="input-group">
+    <input class="form-control" id="skills" name="skills" value="{{ skills_text }}" placeholder="Python, SQL, Flask" autofocus>
+    <button class="btn btn-primary" type="submit">Find matches</button>
+  </div>
+  <div class="form-text">Separate skills with commas. Matching ignores capitalization.</div>
+  {% if known_skills %}
+  <div class="mt-2 small text-muted">Skills in your saved jobs: {{ known_skills|join(', ') }}</div>
+  {% endif %}
+</form>
+
+{% if results is none %}
+  {# nothing searched yet #}
+{% elif results %}
+  <p class="mb-2"><strong>Your skills:</strong> {{ user_skills.values()|join(', ') }}</p>
+  <ol class="list-unstyled match-list">
+    {% for r in results %}
+    <li class="match-card {{ 'match-none' if r.percent == 0 }}">
+      <div class="d-flex justify-content-between align-items-baseline gap-3">
+        <div>
+          <a class="match-title" href="{{ url_for('detail_view', entity_key='jobs', record_id=r.job_id) }}">{{ r.job_title }}</a>
+          <span class="text-muted">at {{ r.company_name }}</span>
+        </div>
+        <div class="match-percent">{{ r.percent }}% <small class="text-muted">({{ r.matched|length }}/{{ r.total }} skills)</small></div>
+      </div>
+      <div class="progress my-2" role="progressbar" aria-label="Match for {{ r.job_title }}" aria-valuenow="{{ r.percent }}" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar bar-match" style="width: {{ r.percent }}%"></div>
+      </div>
+      {% if r.matched %}<div class="small">You have: {% for s in r.matched %}<span class="badge skill-chip">{{ s }}</span> {% endfor %}</div>{% endif %}
+      {% if r.missing %}<div class="small mt-1">Missing: {% for s in r.missing %}<span class="badge skill-chip skill-missing">{{ s }}</span> {% endfor %}</div>{% endif %}
+    </li>
+    {% endfor %}
+  </ol>
+{% else %}
+  <div class="empty-state">
+    <p class="mb-2">No jobs have required skills listed yet.</p>
+    <a class="btn btn-primary" href="{{ url_for('new_view', entity_key='jobs') }}">Add a job with skills</a>
+  </div>
+{% endif %}
+{% endblock %}

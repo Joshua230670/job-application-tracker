@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% from "_macros.html" import cell %}
+{% block title %}{{ record[entity.title_key] }}{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb"><ol class="breadcrumb">
+  <li class="breadcrumb-item"><a href="{{ url_for('list_view', entity_key=key) }}">{{ entity.plural }}</a></li>
+  <li class="breadcrumb-item active" aria-current="page">{{ record[entity.title_key] }}</li>
+</ol></nav>
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <h1 class="h3 mb-0">{{ record[entity.title_key] }}{% if record.company_name and key != 'companies' %} <small class="text-muted">at {{ record.company_name }}</small>{% endif %}</h1>
+  <div class="d-flex gap-2">
+    <a class="btn btn-outline-secondary" href="{{ url_for('edit_view', entity_key=key, record_id=record[entity.pk]) }}">Edit</a>
+    <a class="btn btn-outline-danger" href="{{ url_for('delete_view', entity_key=key, record_id=record[entity.pk]) }}">Delete</a>
+  </div>
+</div>
+
+<div class="detail-card mb-4">
+  <dl class="row mb-0">
+    {% for f in entity.fields %}
+    {% set v = record[f.display] if f.display else record[f.name] %}
+    <dt class="col-sm-3">{{ f.label }}</dt>
+    <dd class="col-sm-9">
+      {% if f.type == 'bool' %}{{ 'Yes' if v else 'No' }}
+      {% elif v is none or v == '' or v == [] %}<span class="text-muted">&ndash;</span>
+      {% elif f.type == 'skills' %}{% for s in v %}<span class="badge skill-chip">{{ s }}</span> {% endfor %}
+      {% elif f.type == 'json' %}<pre class="json-block mb-0">{{ v | pretty_json }}</pre>
+      {% elif f.type == 'url' %}<a href="{{ v }}" target="_blank" rel="noopener noreferrer">{{ v }}</a>
+      {% elif f.type == 'email' %}<a href="mailto:{{ v }}">{{ v }}</a>
+      {% elif f.type == 'fk' %}<a href="{{ url_for('detail_view', entity_key=f.parent, record_id=record[f.name]) }}">{{ v }}</a>
+      {% elif f.name == 'status' %}{{ cell('status', record) }}
+      {% elif f.name == 'salary_min' or f.name == 'salary_max' %}${{ '{:,}'.format(v) }}
+      {% else %}{{ v }}{% endif %}
+    </dd>
+    {% endfor %}
+  </dl>
+</div>
+
+{% for rel in related %}
+<h2 class="h5">{{ rel.title }}</h2>
+{% if rel.rows %}
+<div class="table-responsive mb-4">
+  <table class="table table-sm table-hover bg-white align-middle">
+    <thead><tr>{% for col, label in rel.columns %}<th scope="col">{{ label }}</th>{% endfor %}</tr></thead>
+    <tbody>
+      {% for r in rel.rows %}
+      <tr>{% for col, label in rel.columns %}<td>
+        {% if loop.first %}<a href="{{ url_for('detail_view', entity_key=rel.entity, record_id=r[entities[rel.entity].pk]) }}">{{ cell(col, r) }}</a>{% else %}{{ cell(col, r) }}{% endif %}
+      </td>{% endfor %}</tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="text-muted mb-4">No {{ rel.title|lower }} yet.</p>
+{% endif %}
+{% endfor %}
+{% endblock %}

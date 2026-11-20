@@ -1,0 +1,4 @@
+{% extends "base.html" %}
+{% from "_macros.html" import entity_list %}
+{% block title %}Jobs{% endblock %}
+{% block content %}{{ entity_list(entity, key, rows) }}{% endblock %}

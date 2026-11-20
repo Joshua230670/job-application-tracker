@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Delete {{ entity.singular|lower }}{% endblock %}
+{% block content %}
+<div class="form-card">
+  <h1 class="h3 mb-3">Delete this {{ entity.singular|lower }}?</h1>
+  <p><strong>{{ record[entity.title_key] }}</strong>{% if record.company_name and key != 'companies' %} at {{ record.company_name }}{% endif %} will be removed permanently.
+  {% if entity.cascade_note %}{{ entity.cascade_note }}{% endif %}</p>
+  <form method="post" class="d-flex gap-2">
+    <button class="btn btn-danger" type="submit">Delete {{ entity.singular|lower }}</button>
+    <a class="btn btn-outline-secondary" href="{{ url_for('detail_view', entity_key=key, record_id=record[entity.pk]) }}">Keep it</a>
+  </form>
+</div>
+{% endblock %}

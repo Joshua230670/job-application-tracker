@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% from "_macros.html" import cell %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">Dashboard</h1>
+
+<div class="row g-3 mb-4">
+  {% for label, value in [('Active applications', stats.active), ('Interviews', stats.interviews), ('Offers', stats.offers), ('Response rate', stats.response_rate ~ '%')] %}
+  <div class="col-6 col-lg-3">
+    <div class="stat-tile">
+      <div class="stat-value">{{ value }}</div>
+      <div class="stat-label">{{ label }}</div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-6">
+    <h2 class="h5">Applications by status</h2>
+    {% if total %}
+    <div class="detail-card">
+      {% for status, n in status_rows %}
+      <div class="d-flex align-items-center gap-3 mb-2">
+        <span class="status-label">{{ status }}</span>
+        <div class="progress flex-grow-1" role="progressbar" aria-label="{{ status }}" aria-valuenow="{{ n }}" aria-valuemin="0" aria-valuemax="{{ total }}">
+          <div class="progress-bar bar-{{ status|lower }}" style="width: {{ (100 * n / total)|round(1) }}%"></div>
+        </div>
+        <span class="status-count">{{ n }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state"><p class="mb-2">No applications yet.</p><a class="btn btn-primary" href="{{ url_for('new_view', entity_key='applications') }}">Add an application</a></div>
+    {% endif %}
+
+    <h2 class="h5 mt-4">Your data</h2>
+    <div class="detail-card">
+      <ul class="list-unstyled mb-0 data-counts">
+        <li><a href="{{ url_for('list_view', entity_key='companies') }}">Companies</a><span>{{ counts.companies }}</span></li>
+        <li><a href="{{ url_for('list_view', entity_key='jobs') }}">Jobs</a><span>{{ counts.jobs }}</span></li>
+        <li><a href="{{ url_for('list_view', entity_key='applications') }}">Applications</a><span>{{ counts.applications }}</span></li>
+        <li><a href="{{ url_for('list_view', entity_key='contacts') }}">Contacts</a><span>{{ counts.contacts }}</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <h2 class="h5">Recent applications</h2>
+    {% if recent %}
+    <div class="table-responsive">
+      <table class="table table-hover bg-white align-middle">
+        <thead><tr><th scope="col">Job</th><th scope="col">Applied</th><th scope="col">Status</th></tr></thead>
+        <tbody>
+          {% for a in recent %}
+          <tr>
+            <td><a href="{{ url_for('detail_view', entity_key='applications', record_id=a.application_id) }}">{{ a.job_title }}</a><br><small class="text-muted">{{ a.company_name }}</small></td>
+            <td>{{ a.application_date }}</td>
+            <td>{{ cell('status', a) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="text-muted">Recent applications will show up here.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

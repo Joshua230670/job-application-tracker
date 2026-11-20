@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Database problem{% endblock %}
+{% block content %}
+<div class="form-card">
+  <h1 class="h3 mb-3">The database is not responding</h1>
+  <p>Check that MySQL is running, that you ran <code>schema.sql</code>, and that the
+  <code>DB_HOST</code>, <code>DB_USER</code>, <code>DB_PASSWORD</code> and <code>DB_NAME</code>
+  environment variables match your setup.</p>
+  <pre class="json-block">{{ message }}</pre>
+</div>
+{% endblock %}
