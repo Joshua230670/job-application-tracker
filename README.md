@@ -11,3 +11,6 @@ A web application to help track job applications during the job search process.
 - MySQL Database 
 - Python with Flask 
 - HTML/CSS for the web interface 
+
+## Setup
+W.I.P
