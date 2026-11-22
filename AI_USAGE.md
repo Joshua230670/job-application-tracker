@@ -26,7 +26,7 @@
 
 ## What I Modified
 - Changed how the job match skills were calculated by adding the percentage to be displayed rather than just a fraction.
-- Rather than using the instruction '<' to load 'schema.sql', I used 'Get-Content schema.sql | mysql.exe -u root -p' since powershell doesn't support the original method.
+- Rather than using the instruction '<' to load 'schema.sql', I used 'Get-Content schema.sql | & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" -u root -p' since powershell doesn't support the original method.
 - Modified the fonts and color palette in style.css to fit my own liking.
 - Added a filter option in the applications page.
 - Added keywords to the tables to prevent any errors (e.g., 'NOT NULL' in the job table so a job can't exist without a company, 'CHECK' so the 'salary_min' doesn't exceed 'salary_max'.
