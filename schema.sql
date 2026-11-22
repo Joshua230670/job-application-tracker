@@ -1,5 +1,5 @@
 -- Job Application Tracker: database creation script
--- Usage:  mysql -u root -p < schema.sql
+-- Usage: Get-Content schema.sql | & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" -u root -p.                                                        
 -- Requires MySQL 8.0+ (JSON columns, CHECK constraints).
 
 CREATE DATABASE IF NOT EXISTS job_tracker;
@@ -64,7 +64,7 @@ CREATE TABLE contacts (
 );
 
 -- ---------------------------------------------------------------
--- Sample data so the app has something to show on first run
+-- Sample data
 -- ---------------------------------------------------------------
 INSERT INTO companies (company_name, industry, website, city, state, notes) VALUES
 ('TechCorp',   'Software',   'https://www.techcorp.example',   'Miami',   'Florida', 'Met the team at the spring career fair.'),
